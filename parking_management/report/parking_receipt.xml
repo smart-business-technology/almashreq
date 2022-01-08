@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- QWeb Reports -->
+        <report
+            id="parking_receipt"
+            model="parking.booking"
+            string="Print Receipt"
+            report_type="qweb-pdf"
+            print_report_name="'%s (%s) Booking Receipt'%(object.customer_name,object.name)"
+            name="parking_management.parking_receipt_template"
+            file="parking_management.parking_receipt_template"
+        />
+    </data>
+</odoo>

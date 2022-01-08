@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <record id="parking_category" model="ir.module.category">
+            <field name="name">Parking Management</field>
+            <field name="description">Permissions for parking management.</field>
+            <field name="sequence">16</field>
+        </record>
+
+        <record id="parking_user" model="res.groups">
+            <field name="name">User</field>
+            <field name="category_id" ref="parking_category"/>
+            <field name="implied_ids" eval="[(4, ref('account.group_account_invoice'))]"/>
+            <field name="comment">The user will have access to only some fields.</field>
+        </record>
+
+        <record id="parking_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="category_id" ref="parking_category"/>
+            <field name="implied_ids" eval="[(4, ref('parking_management.parking_user')),(4, ref('account.group_account_invoice'))]"/>
+            <field name="comment">The manager will have access to all fields.</field>
+        </record>
+
+        <record id="base.user_admin" model="res.users">
+            <field eval="[(4, ref('parking_management.parking_manager'))]" name="groups_id"/>
+        </record>
+    </data>
+    <data noupdate="1">
+        <record model="ir.rule" id="parking_user_rule">
+            <field name="name">Parking User</field>
+            <field name="model_id" ref="model_parking_booking"/>
+            <field name="domain_force">[('create_uid','=',user.id),'|',('company_id','=',user.company_id.id),('company_id','=',False)]</field>
+            <field name="groups" eval="[(4,ref('parking_management.parking_user'))]"/>
+        </record>
+
+        <record model="ir.rule" id="parking_floor_user_rule">
+            <field name="name">Parking Floor</field>
+            <field name="model_id" ref="model_parking_floor"/>
+            <field name="domain_force">['|',('company_id','=',user.company_id.id),('company_id','=',False)]</field>
+            <field name="groups" eval="[(4,ref('parking_management.parking_user'))]"/>
+        </record>
+
+        <record model="ir.rule" id="parking_zone_user_rule">
+            <field name="name">Parking Zone</field>
+            <field name="model_id" ref="model_parking_zone"/>
+            <field name="domain_force">['|',('company_id','=',user.company_id.id),('company_id','=',False)]</field>
+            <field name="groups" eval="[(4,ref('parking_management.parking_user'))]"/>
+        </record>
+
+        <record model="ir.rule" id="parking_pricing_user_rule">
+            <field name="name">Parking Pricing</field>
+            <field name="model_id" ref="model_parking_pricing"/>
+            <field name="domain_force">['|',('company_id','=',user.company_id.id),('company_id','=',False)]</field>
+            <field name="groups" eval="[(4,ref('parking_management.parking_user'))]"/>
+        </record>
+
+        <record model="ir.rule" id="parking_manager_rule">
+            <field name="name">Parking Manager</field>
+            <field name="model_id" ref="model_parking_booking"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4,ref('parking_management.parking_manager'))]"/>
+        </record>
+
+        <record model="ir.rule" id="parking_floor_manager_rule">
+            <field name="name">Parking Floor</field>
+            <field name="model_id" ref="model_parking_floor"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4,ref('parking_management.parking_manager'))]"/>
+        </record>
+
+        <record model="ir.rule" id="parking_zone_manager_rule">
+            <field name="name">Parking Zone</field>
+            <field name="model_id" ref="model_parking_zone"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4,ref('parking_management.parking_manager'))]"/>
+        </record>
+
+        <record model="ir.rule" id="parking_pricing_manager_rule">
+            <field name="name">Parking Pricing</field>
+            <field name="model_id" ref="model_parking_pricing"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4,ref('parking_management.parking_manager'))]"/>
+        </record>
+    </data>
+</odoo>

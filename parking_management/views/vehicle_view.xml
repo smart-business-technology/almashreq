@@ -1,0 +1,719 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="booking_graph_view" model="ir.ui.view">
+        <field name="name">parking.booking.graph</field>
+        <field name="model">parking.booking</field>
+        <field name="arch" type="xml">
+            <graph string="Parking Booking Summary">
+                <field name="floor_id"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="booking_pivot_view" model="ir.ui.view">
+        <field name="name">parking.booking.pivot</field>
+        <field name="model">parking.booking</field>
+        <field name="arch" type="xml">
+            <pivot string="Parking Booking Summary">
+                <field name="floor_id" type="row"/>
+                <field name="state" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="booking_kanban_wizard" model="ir.ui.view">
+        <field name="name">Booking kanban View</field>
+        <field name="model">parking.booking</field>
+        <field name="priority">2</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="customer_name"/>
+                <field name="vehicle_no"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="duration"/>
+                <field name="total_amount"/>
+                <field name="advance_amount"/>
+                <field name="balance"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <div class="row mb4">
+                                    <div class="col-6">
+                                        <strong><field name="name"/></strong>
+                                    </div>
+                                    <div class="col-6 text-right">
+                                        <t t-set="state_val" t-value="record.state.value"/>
+                                        <t t-if="state_val == 'New'">
+                                            <span class="badge badge-pill badge-primary"><t t-esc="record.state.value"/></span>
+                                        </t>
+                                        <t t-elif="state_val == 'Allotted'">
+                                            <span class="badge badge-pill badge-success"><t t-esc="record.state.value"/></span>
+                                        </t>
+                                        <t t-elif="state_val == 'Released'">
+                                            <span class="badge badge-pill badge-warning"><t t-esc="record.state.value"/></span>
+                                        </t>
+                                        <t t-elif="state_val == 'Invoiced'">
+                                            <span class="badge badge-pill badge-info"><t t-esc="record.state.value"/></span>
+                                        </t>
+                                    </div>
+                                </div>
+                                <ul>
+                                    <li>Booked by: <field name="customer_name"/></li>
+                                    <li>Booked on: <field name="check_in"/></li>
+                                    <li>Total Amount:
+                                        <span class="o_stat_value"><b>
+                                            <field name="currency_id" invisible='1'/>
+                                            <field name="total_amount" widget='monetary' options="{'currency_field': 'currency_id'}"/></b>
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="booking_form_wizard" model="ir.ui.view">
+        <field name="name">Booking form View</field>
+        <field name="model">parking.booking</field>
+        <field name="priority">2</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group>
+                        <field name="check_in" readonly='1'/>
+                        <field name="check_out" required='1'/>
+                        <label for="duration"/>
+                        <div class="o_row o_row_readonly">
+                            <span style="width: 30%;">
+                                <field name="duration" readonly='1'/>
+                            </span>
+                            <field name="duration_unit"/>
+                        </div>
+                        <field name="total_amount"/>
+                        <field name="advance_amount" readonly='1'/>
+                        <field name="balance"/>
+                        <field name="pricing" invisible='1'/>
+                        <field name="vehicle_type" invisible='1'/>
+                        <field name="pricelist_id" invisible='1'/>
+                        <field name="state" invisible='1'/>
+                        <field name="currency_id" invisible='1'/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="release_parking" string="Save" type="object" class='oe_highlight'/>
+                    <button name="cancel" string="Cancel" special="cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="booking_customer_wizard" model="ir.ui.view">
+        <field name="name">Booking form View</field>
+        <field name="model">parking.booking</field>
+        <field name="priority">4</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="customer" options="{'no_open': True}"/>
+                </group>
+                <footer>
+                    <button name="create_parking_invoice" string="Save" type="object" class='oe_highlight'/>
+                    <button name="cancel" string="Cancel" special="cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="booking_form_view" model="ir.ui.view">
+        <field name="name">Booking form View</field>
+        <field name="model">parking.booking</field>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <form duplicate="false">
+                <header>
+                    <button name='book_now' string='Book Now' type='object' class='oe_highlight' states='new'/>
+                    <button name='get_checkout' string='Release' type='object' class='oe_highlight' states='allotted'/>
+                    <button name='get_customer' string='Create Invoice' type='object' class='oe_highlight' states='released'/>
+                    <field name='state' widget='statusbar'/>
+                    <button name='print_receipt' string='Print Receipt' type='object' class='oe_highlight' states='allotted,released,invoiced'/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" class="oe_stat_button" icon="fa-pencil-square-o" name="open_invoice" attrs="{'invisible':[('invoice_id','=',False)]}">
+                            <span>
+                                <field name="invoice_id" readonly='1'/>
+                            </span>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly='1'/>
+                        </h1>
+                    </div>
+                    <group string="Customer Info">
+                        <group>
+                            <field name="customer" attrs="{'readonly':[('state','in',['allotted','released','invoiced'])]}" options="{'no_open': True}"/>
+                            <field name="customer_name"/>
+                        </group>
+                        <group>
+                            <field name="company_id" required='1' groups="base.group_multi_company" options="{'no_quick_create': True,'no_create': True,'no_create_edit': True, 'no_open': True}"/>
+                            <field name="pricelist_id" required='1' groups="product.group_sale_pricelist" attrs="{'readonly':[('state','in',['allotted','released','invoiced'])]}" options="{'no_quick_create': True,'no_create': True,'no_create_edit': True, 'no_open': True}"/>
+                            <field name="currency_id" invisible='1'/>
+                        </group>
+                    </group>
+                    <group string="Vehicle Info">
+                        <group>
+                            <field name="vehicle_no"/>
+                            <field name="vehicle_type" options="{'no_quick_create': True,'no_create': True,'no_create_edit': True, 'no_open': True}"/>
+                            <field name="pricing" options="{'no_quick_create': True,'no_create': True,'no_create_edit': True, 'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="floor_id" required='1' options="{'no_quick_create': True,'no_create': True,'no_create_edit': True, 'no_open': True}" attrs="{'invisible':[('pricing','=',False)]}"/>
+                            <field name="zone_id" options="{'no_quick_create': True,'no_create': True,'no_create_edit': True, 'no_open': True}" attrs="{'invisible':[('floor_id','=',False)]}"/>
+                            <field name="slot_id" options="{'no_quick_create': True,'no_create': True,'no_create_edit': True, 'no_open': True}" attrs="{'invisible':['|',('zone_id','=',False),('floor_id','=',False)]}"/>
+                        </group>
+                    </group>
+                    <group string="Booking Info">
+                        <group>
+                            <field name="check_in" attrs="{'readonly':[('state','in',['allotted','released','invoiced'])]}"/>
+                            <field name="check_out" attrs="{'readonly':[('state','in',['released','invoiced'])]}"/>
+                            <label for="duration"/>
+                            <div class="o_row o_row_readonly">
+                                <span style="width: 30%;">
+                                    <field name="duration" readonly='1' />
+                                </span>
+                                <field name="duration_unit"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="total_amount" readonly='1'/>
+                            <field name="advance_amount" attrs="{'readonly':[('state','in',['released','invoiced'])]}"/>
+                            <field name="balance"/>
+                        </group>
+                    </group>
+                    <separator string="Description"/>
+                    <field name="description"/>
+                </sheet>
+                <div class='oe_chatter'>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name='message_ids' widget='mail_thread'/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="booking_tree_view" model="ir.ui.view">
+        <field name="name">Booking tree View</field>
+        <field name="model">parking.booking</field>
+        <field name="arch" type="xml">
+            <tree decoration-muted="state=='new'"
+                decoration-success="state=='allotted'"
+                decoration-warning="state=='released'"
+                decoration-info="state=='invoiced'">
+                <field name="name"/>
+                <field name="customer_name"/>
+                <field name="vehicle_no"/>
+                <field name="vehicle_type"/>
+                <field name="pricing"/>
+                <field name="duration"/>
+                <field name="total_amount"/>
+                <field name="advance_amount"/>
+                <field name="balance"/>
+                <field name='state'/>
+                <field name="create_uid"/>
+                <field name="create_date"/>
+                <field name="currency_id" invisible='1'/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="booking_search_view" model="ir.ui.view">
+        <field name="name">Booking search View</field>
+        <field name="model">parking.booking</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="customer"/>
+                <field name="vehicle_no"/>
+                <field name="vehicle_type"/>
+                <field name="pricing"/>
+                <field name="duration"/>
+                <field name="total_amount"/>
+                <field name="advance_amount"/>
+                <field name="balance"/>
+                <field name='state'/>
+                <field name="floor_id"/>
+                <filter string="Allotted" name="allotted" domain="[('state','=','allotted')]"></filter>
+                <filter string="Release" name="released" domain="[('state','=','released')]"></filter>
+                <filter string="Invoiced" name="invoiced" domain="[('state','=','invoiced')]"></filter>
+                <group string="Group By Floor">
+                    <filter  name="group_by_floor" string="Floor" context="{'group_by' : 'floor_id'}"></filter>
+                </group>
+                <group string="Group By Vehicle Type">
+                    <filter  name="group_by_type" string="Vehicle Type" context="{'group_by' : 'vehicle_type'}"></filter>
+                </group>
+                <group string="Group By Customer">
+                    <filter  name="group_by_customer" string="Customer" context="{'group_by' : 'customer'}"></filter>
+                </group>
+                <group string="Group By State">
+                    <filter  name="group_by_state" string="State" context="{'group_by' : 'state'}"></filter>
+                </group>
+                <group string="Group By Pricing">
+                    <filter  name="group_by_pricing" string="Pricing" context="{'group_by' : 'pricing'}"></filter>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vehicle_config_tree" model="ir.ui.view">
+        <field name="name">Parking Pricing Tree</field>
+        <field name="model">parking.pricing</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="vehicle_type"/>
+                <field name="floor_ids"  widget="many2many_tags"/>
+                <field name="zones"  widget="many2many_tags"/>
+                <field name="fixed_price"/>
+                <field name="additional_price"/>
+                <field name="available_slots"/>
+                <field name="create_uid"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="vehicle_pricing_form" model="ir.ui.view">
+        <field name="name">Parking Pricing Form</field>
+        <field name="model">parking.pricing</field>
+        <field name="arch" type="xml">
+            <form duplicate='false'>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button type="object" class="oe_stat_button" icon="fa-list-alt" name="open_booking" attrs="{'invisible':[('id','=',False)]}">
+                            <span>
+                                Bookings
+                            </span>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group groups="base.group_multi_company,product.group_sale_pricelist">
+                            <field name="company_id" required='1' groups="base.group_multi_company"/>
+                            <field name="pricelist_id" required='1' groups="product.group_sale_pricelist"/>
+                            <field name="currency_id" invisible='1'/>
+                        </group>
+                        <group>
+                            <field name="create_uid" string="Created By" attrs="{'invisible':[('create_uid','=',False)]}"/>
+                            <field name="create_date" string="Created On" attrs="{'invisible':[('create_date','=',False)]}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Vehicle Info">
+                            <field name="vehicle_type"/>
+                            <field name="floor_ids"  widget="many2many_tags" options="{'no_create_edit': True}"/>
+                            <field name="zones"  widget="many2many_tags" options="{'no_create_edit': True}" attrs="{'invisible':[('zones','=',False)]}"/>
+                        </group>
+                        <group string="Pricing Info">
+                            <field name="duration_type"/>
+                            <label for="fixed_price" string="Standard Price"/>
+                            <div class="o_row o_row_readonly">
+                                <field name="fixed_price"/>
+                                <span class="oe_inline">/</span>
+                                <field name="fixed_duration"/>
+                                <field name="duration_unit_type"/>
+                            </div>
+                            <label for="additional_price" string="Additional price"/>
+                            <div class="o_row o_row_readonly">
+                                <field name="additional_price"/>
+                                <span class="oe_inline">/</span>
+                                <field name="additional_duration"/>
+                                <field name="duration_unit_type"/>
+                            </div>
+                        </group>
+                    </group>
+                    <separator string="Description"/>
+                    <field name="description"/>
+                </sheet>
+                <div class='oe_chatter'>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name='message_ids' widget='mail_thread'/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="vehicle_config_search" model="ir.ui.view">
+        <field name="name">Parking Pricing Search</field>
+        <field name="model">parking.pricing</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="zones"/>
+                <filter string="Status" name="status_filter"/>
+                <filter string="Archived" name="archived" domain="[('active','=',False)]"></filter>
+                <group string="Group By Vehicle Type">
+                    <filter  name="group_by_vehicle_type" string="Vehicle Type" context="{'group_by' : 'vehicle_type'}"></filter>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="vehicle_type_tree_view" model="ir.ui.view">
+        <field name="name">Vehicle type tree View</field>
+        <field name="model">vehicle.type</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="vehicle_type_form_view" model="ir.ui.view">
+        <field name="name">Vehicle type form View</field>
+        <field name="model">vehicle.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="create_uid" attrs="{'invisible':[('create_uid','=',False)]}"/>
+                            <field name="create_date" attrs="{'invisible':[('create_uid','=',False)]}"/>
+                        </group>
+                    </group>
+                    <separator string="Description"/>
+                    <field name="description"/>
+                </sheet>
+                <div class='oe_chatter'>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name='message_ids' widget='mail_thread'/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="slot_kanban_view" model="ir.ui.view">
+        <field name="name">Slot kanban View</field>
+        <field name="model">parking.slots</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="status"/>
+                <field name="zone_id"/>
+                <field name="create_uid"/>
+                <field name="create_date"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click">
+                            <div class="row mb4">
+                                <div class="col-6">
+                                    <strong><span><t t-esc="record.name.value"/></span></strong>
+                                </div>
+                                <div class="col-6 text-right">
+                                    <t t-set="status_val" t-value="record.status.value"/>
+                                    <t t-if="status_val == 'Available'">
+                                        <span class="badge badge-pill badge-success"><t t-esc="record.status.value"/></span>
+                                    </t>
+                                    <t t-else="1">
+                                        <span class="badge badge-pill badge-danger"><t t-esc="record.status.value"/></span>
+                                    </t>
+                                </div>
+                              </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="slot_tree_view" model="ir.ui.view">
+        <field name="name">Slot tree View</field>
+        <field name="model">parking.slots</field>
+        <field name="arch" type="xml">
+            <tree decoration-success="status=='available'"
+                decoration-info="status=='not_available'"
+                decoration-danger="status=='blocked'">
+                <field name="name"/>
+                <field name="status"/>
+                <field name="zone_id"/>
+                <field name="create_uid"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="slot_form_view" model="ir.ui.view">
+        <field name="name">Slot form View</field>
+        <field name="model">parking.slots</field>
+        <field name="arch" type="xml">
+            <form edit='false'>
+                <header>
+                    <button name='block_slot' string='Block Slot' type='object' class='oe_highlight' attrs="{'invisible':[('status','=','blocked')]}" groups="parking_management.parking_manager"/>
+                    <button name='unblock_slot' string='Unblock Slot' type='object' class='oe_highlight' attrs="{'invisible':[('status','!=','blocked')]}" groups="parking_management.parking_manager"/>
+                    <field name='status' widget='statusbar'/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" groups="parking_management.parking_manager"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="zone_id"/>
+                            <field name="company_id" required='1' groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="create_uid" string="Created By" attrs="{'invisible':[('create_uid','=',False)]}"/>
+                            <field name="create_date" string="Created On" attrs="{'invisible':[('create_date','=',False)]}"/>
+                        </group>
+                    </group>
+                    <separator string="Description"/>
+                    <field name="description"/>
+                </sheet>
+                <div class='oe_chatter'>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name='message_ids' widget='mail_thread'/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="slot_search_view" model="ir.ui.view">
+        <field name="name">Slot search View</field>
+        <field name="model">parking.slots</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="zone_id"/>
+                <field name="floor_id"/>
+                <field name='status'/>
+                <filter string="Archived" name="archived" domain="[('active','=',False)]"></filter>
+                <filter string="Available" name="available" domain="[('status','=','available')]"></filter>
+                <filter string="Booked" name="not_available" domain="[('status','=','not_available')]"></filter>
+                <group string="Group By Status">
+                    <filter  name="group_by_status" string="Status" context="{'group_by' : 'status'}"></filter>
+                </group>
+                <group string="Group By Zone ID">
+                    <filter  name="group_by_zones" string="Zone ID" context="{'group_by' : 'zone_id'}"></filter>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="zone_tree_view" model="ir.ui.view">
+        <field name="name">Zone tree View</field>
+        <field name="model">parking.zone</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="capacity"/>
+                <field name="floor_id"/>
+                <field name="slots"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="zone_form_view" model="ir.ui.view">
+        <field name="name">Zone form View</field>
+        <field name="model">parking.zone</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name='%(create_slot_action)d' string='Update capacity' type='action' class='oe_highlight' context="{'default_zone_id':id}" attrs="{'invisible':['|',('id','=',False),('if_slots','=',False)]}" groups="parking_management.parking_manager"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_right oe_stat_button" icon="fa-building-o" type="object" name="action_view_slots" attrs="{'invisible':[('capacity','&lt;=',0)]}">
+                        <field name="slots" string="Slots" widget="statinfo" readonly='1'/>
+                        </button>
+                    </div>
+                    <label for="name" string="Name" class="oe_edit_only"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" required='1'/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" required='1' groups="base.group_multi_company"/>
+                            <field name="if_slots"/>
+                            <field name="capacity" string="Zone Capacity" attrs="{'invisible':[('if_slots','=',False)]}"/>
+                        </group>
+                        <group>
+                            <field name="floor_id" options="{'no_create_edit': True, 'no_open': True}" attrs="{'invisible':[('create_uid','=',False)]}"/>
+                            <field name="create_uid" string="Created By" attrs="{'invisible':[('create_uid','=',False)]}"/>
+                            <field name="create_date" string="Created On" attrs="{'invisible':[('create_date','=',False)]}"/>
+                        </group>
+                    </group>
+                    <separator string="Description"/>
+                    <field name="description"/>
+                </sheet>
+                <div class='oe_chatter'>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name='message_ids' widget='mail_thread'/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="zone_search_view" model="ir.ui.view">
+        <field name="name">Zone search View</field>
+        <field name="model">parking.zone</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="floor_id"/>
+                <field name="capacity"/>
+                <filter string="Archived" name="archived" domain="[('active','=',False)]"></filter>
+                <group string="Group By Floor">
+                    <filter  name="group_by_floor" string="Floor" context="{'group_by' : 'floor_id'}"></filter>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="floor_tree_view" model="ir.ui.view">
+        <field name="name">Floor tree View</field>
+        <field name="model">parking.floor</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="if_zones"/>
+                <field name="floor_capacity"/>
+                <field name="create_uid"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="floor_form_view" model="ir.ui.view">
+        <field name="name">Floor form View</field>
+        <field name="model">parking.floor</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_right oe_stat_button" icon="fa-building-o" type="object" name="action_view_slots">
+                            <field name="slots" string="Slots" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <label for="name" string="Name" class="oe_edit_only"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" required='1'/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" required='1' groups="base.group_multi_company"/>
+                            <field name="if_zones"/>
+                            <field name="floor_capacity" attrs="{'invisible':[('if_zones','=',False)]}"/>
+                        </group>
+                        <group>
+                            <field name="create_uid" string="Created By" attrs="{'invisible':[('create_uid','=',False)]}"/>
+                            <field name="create_date" string="Created On" attrs="{'invisible':[('create_date','=',False)]}"/>
+                        </group>
+                    </group>
+                    <separator string="Zones" colspan="4" attrs="{'invisible':[('if_zones','=',False)]}"/>
+                    <field name="zones" attrs="{'invisible':[('if_zones','=',False)]}"/>
+                    <separator string="Description"/>
+                    <field name="description"/>
+                </sheet>
+                <div class='oe_chatter'>
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name='message_ids' widget='mail_thread'/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="floor_search_view" model="ir.ui.view">
+        <field name="name">Floor search View</field>
+        <field name="model">parking.floor</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="zones"/>
+                <filter string="With Zones" name="with_zones" domain="[('if_zones','=',True)]"/>
+                <filter string="Without Zones" name="without_zones" domain="[('if_zones','=',False)]"/>
+                <filter string="Archived" name="archived" domain="[('active','=',False)]"></filter>
+            </search>
+        </field>
+    </record>
+
+    <record id="booking_action" model="ir.actions.act_window">
+        <field name="name">Bookings</field>
+        <field name="res_model">parking.booking</field>
+        <field name="domain"></field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <record id="report_action_floor" model="ir.actions.act_window">
+        <field name="name">Booking Report</field>
+        <field name="res_model">parking.booking</field>
+        <field name="domain"></field>
+        <field name="view_mode">graph,pivot</field>
+    </record>
+
+    <record id="category_action" model="ir.actions.act_window">
+        <field name="name">Vehicle type</field>
+        <field name="res_model">vehicle.type</field>
+        <field name="domain"></field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="slot_action" model="ir.actions.act_window">
+        <field name="name">Slots</field>
+        <field name="res_model">parking.slots</field>
+        <field name="view_mode">kanban,tree,form</field>
+    </record>
+
+    <record id="floor_action" model="ir.actions.act_window">
+        <field name="name">Floors</field>
+        <field name="res_model">parking.floor</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="zone_action" model="ir.actions.act_window">
+        <field name="name">Zones</field>
+        <field name="res_model">parking.zone</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="pricing_action" model="ir.actions.act_window">
+        <field name="name">Parking Pricing</field>
+        <field name="res_model">parking.pricing</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="parking_menu" name="Parking" groups="base.group_user"/>
+    <menuitem  id="booking_menu" name="Bookings" parent="parking_menu" action="booking_action" sequence="2" />
+    <menuitem  id="pricing_menu" name="Pricings" parent="parking_menu" action="pricing_action" sequence="3" />
+    <menuitem id="report_menu" name="Reports" parent="parking_menu" sequence="4"/>
+    <menuitem id="configuration_menu" name="Configuration" parent="parking_menu" groups="parking_management.parking_manager" sequence="5"/>
+    <menuitem  id="report_by_floor" name="By Floor" parent="report_menu" action="report_action_floor" sequence="1" />
+    <menuitem  id="vehicle_category_menu" name="Vehicle Type" parent="configuration_menu" action="category_action" sequence="1" />
+    <menuitem  id="floor_menu" name="Floor" parent="configuration_menu" action="floor_action" sequence="2" />
+    <menuitem  id="zone_menu" name="Zones" parent="configuration_menu" action="zone_action" sequence="3" />
+    <menuitem  id="slot_menu" name="Slots" parent="configuration_menu" action="slot_action" sequence="4" />
+
+</odoo>

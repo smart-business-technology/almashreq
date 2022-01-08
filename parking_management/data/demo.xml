@@ -1,0 +1,140 @@
+<odoo>
+    <data noupdate="1">
+
+        <record forcecreate="False" id="parking_zone_1" model="parking.zone">
+            <field name="name">Zone-01</field>
+            <field name="if_slots">True</field>
+            <field name="capacity">4</field>
+            <field name="create_uid" ref="base.user_admin"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record forcecreate="False" id="parking_zone_2" model="parking.zone">
+            <field name="name">Zone-02</field>
+            <field name="if_slots">False</field>
+            <field name="capacity">0</field>
+            <field name="create_uid" ref="base.user_admin"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record forcecreate="False" id="parking_zone_3" model="parking.zone">
+            <field name="name">Zone-03</field>
+            <field name="if_slots">True</field>
+            <field name="capacity">5</field>
+            <field name="create_uid" ref="base.user_admin"/>
+        </record>
+
+        <record model="parking.floor" id="parking_floor_1">
+            <field name="name">Floor-01</field>
+            <field name="create_uid" ref="base.user_admin"/>
+            <field name="if_zones">True</field>
+            <field name="floor_capacity">2</field>
+            <field name="zones" eval="[(6, 0, [ref('parking_management.parking_zone_1'), ref('parking_management.parking_zone_2')])]"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record model="parking.floor" id="parking_floor_2">
+            <field name="name">Floor-02</field>
+            <field name="create_uid" ref="base.user_admin"/>
+            <field name="if_zones">True</field>
+            <field name="floor_capacity">1</field>
+            <field name="zones" eval="[(6, 0, [ref('parking_management.parking_zone_3')])]"/>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+        <record model="parking.floor" id="parking_floor_3">
+            <field name="name">Floor-03</field>
+            <field name="create_uid" ref="base.user_admin"/>
+            <field name="if_zones">False</field>
+            <field name="company_id" ref="base.main_company"/>
+        </record>
+
+        <record forcecreate="False" id="vehicle_type_1" model="vehicle.type">
+            <field name="name">2 wheeler</field>
+            <field name="create_uid" ref="base.user_admin"/>
+        </record>
+        <record forcecreate="False" id="vehicle_type_2" model="vehicle.type">
+            <field name="name">3 wheeler</field>
+            <field name="create_uid" ref="base.user_admin"/>
+        </record>
+        <record forcecreate="False" id="vehicle_type_3" model="vehicle.type">
+            <field name="name">4 wheeler</field>
+            <field name="create_uid" ref="base.user_admin"/>
+        </record>
+
+        <record model="parking.pricing" id="parking_pricing_1">
+            <field name="vehicle_type" ref="parking_management.vehicle_type_1"/>
+            <field name="fixed_price">100</field>
+            <field name="additional_price">50</field>
+            <field name="fixed_duration">1</field>
+            <field name="duration_type">hourly</field>
+            <field name="pricelist_id" ref="product.list0"/>
+            <field name="additional_duration">2</field>
+            <field name="floor_ids" eval="[(6, 0, [ref('parking_management.parking_floor_1')])]"/>
+            <field name="create_uid" ref="base.user_admin"/>
+        </record>
+
+        <record model="parking.pricing" id="parking_pricing_2">
+            <field name="vehicle_type" ref="parking_management.vehicle_type_2"/>
+            <field name="fixed_price">200</field>
+            <field name="additional_price">20</field>
+            <field name="fixed_duration">2</field>
+            <field name="duration_type">daily</field>
+            <field name="pricelist_id" ref="product.list0"/>
+            <field name="additional_duration">1</field>
+            <field name="floor_ids" eval="[(6, 0, [ref('parking_management.parking_floor_2')])]"/>
+            <field name="create_uid" ref="base.user_admin"/>
+        </record>
+
+        <record model="res.partner" id="partner_1">
+            <field name="name">Bryon Jun</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="email">bryon-jun@test.com</field>
+        </record>
+
+        <record id="user_1" model="res.users">
+            <field name="partner_id" ref="partner_1"/>
+            <field name="login">bryon-jun@test.com</field>
+            <field name="password">webkul</field>
+            <field name="signature" type="xml"><span>-- <br/>+Bryon Jun</span></field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="groups_id" eval="[(6,0,[ref('base.group_user'), ref('parking_management.parking_user')])]"/>
+        </record>
+
+        <record model="res.partner" id="partner_2">
+            <field name="name">George Horne</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="email">george-horne@test.com</field>
+        </record>
+
+        <record id="user_2" model="res.users">
+            <field name="partner_id" ref="partner_2"/>
+            <field name="login">george-horne@test.com</field>
+            <field name="password">webkul</field>
+            <field name="signature" type="xml"><span>-- <br/>+George Horne</span></field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="groups_id" eval="[(6,0,[ref('base.group_user'), ref('parking_management.parking_user')])]"/>
+        </record>
+
+        <record model="parking.booking" id="parking_booking_1">
+            <field name="customer" ref="parking_management.partner_1"/>
+            <field name="customer_name">Bryon Jun</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="vehicle_no">112</field>
+            <field name="vehicle_type" ref="parking_management.vehicle_type_1"/>
+            <field name="pricelist_id" ref="product.list0"/>
+            <field name="pricing" ref="parking_management.parking_pricing_1"/>
+            <field name="create_uid" ref="base.user_admin"/>
+        </record>
+        <function model="parking.booking" name="book_now" eval="[ref('parking_booking_1')]"/>
+
+        <record model="parking.booking" id="parking_booking_2">
+            <field name="customer" ref="parking_management.partner_2"/>
+            <field name="customer_name">George Horne</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="vehicle_no">245</field>
+            <field name="vehicle_type" ref="parking_management.vehicle_type_1"/>
+            <field name="pricelist_id" ref="product.list0"/>
+            <field name="duration">2</field>
+            <field name="pricing" ref="parking_management.parking_pricing_2"/>
+            <field name="create_uid" ref="base.user_admin"/>
+        </record>
+
+    </data>
+</odoo>

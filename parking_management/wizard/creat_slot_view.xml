@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="create_slot_form_view" model="ir.ui.view">
+        <field name="name">Zone form View</field>
+        <field name="model">slot.slot</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <!-- <field name="zone_id" readonly='1'/> -->
+                    <field name="capacity"/>
+                </group>
+                <footer>
+                    <button name="create_slots" string="Update Capacity" type="object"
+                   class="oe_highlight"/>
+                   <button special="cancel" class="oe_link" string="Cancel" />
+               </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="create_slot_action" model="ir.actions.act_window">
+        <field name="name">Create Slots</field>
+        <field name="res_model">slot.slot</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

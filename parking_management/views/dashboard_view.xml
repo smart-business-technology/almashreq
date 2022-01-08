@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="new_booking_form" model="ir.ui.view">
+        <field name="name">New Booking form View</field>
+        <field name="model">parking.booking</field>
+        <field name="priority">8</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="state" invisible='1'/>
+                    <group>
+                        <group>
+                            <field name="customer"/>
+                            <field name="customer_name"/>
+                            <field name="vehicle_no"/>
+                            <field name="vehicle_type" options="{'no_quick_create': True,'no_create': True,'no_create_edit': True, 'no_open': True}"/>
+                            <field name="pricelist_id" required='1' options="{'no_quick_create': True,'no_create': True,'no_create_edit': True, 'no_open': True}" groups="product.group_sale_pricelist"/>
+                            <field name="currency_id" invisible='1'/>
+                            <field name="pricing" options="{'no_quick_create': True,'no_create': True,'no_create_edit': True, 'no_open': True}" attrs="{'invisible':[('vehicle_type','=',False)]}"/>
+                            <field name="floor_id" options="{'no_quick_create': True,'no_create': True,'no_create_edit': True, 'no_open': True}" attrs="{'invisible':[('pricing','=',False)]}" required='1'/>
+                            <field name="zone_id" options="{'no_quick_create': True,'no_create': True,'no_create_edit': True, 'no_open': True}" attrs="{'invisible':[('floor_id','=',False)]}"/>
+                            <field name="slot_id" options="{'no_quick_create': True,'no_create': True,'no_create_edit': True, 'no_open': True}" attrs="{'invisible':['|',('zone_id','=',False),('floor_id','=',False)]}"/>
+                        </group>
+                        <group attrs="{'invisible':[('vehicle_type','=',False)]}">
+                            <field name="check_in" readonly='1'/>
+                            <field name="check_out"/>
+                            <label for="duration" attrs="{'invisible':[('check_out','=',False)]}"/>
+                            <div class="o_row o_row_readonly" attrs="{'invisible':[('check_out','=',False)]}">
+                                <span style="width: 30%;">
+                                    <field name="duration" readonly='1' />
+                                </span>
+                                <field name="duration_unit"/>
+                            </div>
+                            <field name="total_amount" readonly='1' attrs="{'invisible':[('check_out','=',False)]}"/>
+                            <field name="advance_amount" attrs="{'invisible':[('check_out','=',False)]}"/>
+                            <field name="balance" attrs="{'invisible':[('check_out','=',False)]}"/>
+                        </group>
+                    </group>
+                    <separator string="Description"/>
+                    <field name="description"/>
+                </sheet>
+                <footer>
+                    <button name="create_new_booking" string="Create Booking" type="object" class='oe_highlight'/>
+                    <button name="cancel" string="Cancel" special="cancel" class="oe_link"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="new_booking_action" model="ir.actions.act_window">
+        <field name="name">New Booking</field>
+        <field name="res_model">parking.booking</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="new_booking_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <record id="booking_dashboard_kanban" model="ir.ui.view">
+        <field name="name">parking.floor.kanban</field>
+        <field name="model">parking.floor</field>
+        <field name="arch" type="xml">
+            <kanban class="oe_background_grey o_kanban_dashboard" create="0">
+                <field name="name"/>
+                <field name="zones"/>
+                <field name="if_zones"/>
+                <field name="floor_capacity"/>
+                <field name="booked"/>
+                <field name="available"/>
+                <field name="color"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="#{!selection_mode ? kanban_color(record.color.raw_value) : ''}">
+                            <div t-attf-class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">
+                                        <field name="name"/>
+                                    </div>
+                                </div>
+                                <div class="o_kanban_manage_button_section">
+                                    <a class="o_kanban_manage_toggle_button" href="#"><i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/></a>
+                                </div>
+                            </div>
+                            <div class="container o_kanban_card_content">
+                                <div class="row">
+                                    <div class="col-6 o_kanban_primary_left">
+                                        <button class="btn btn-primary" name="%(new_booking_action)d" type="action" context="{'default_floor_id': active_id, 'new_booking':'1'}">New Booking
+                                        </button>
+                                    </div>
+                                    <div class="col-6 o_kanban_primary_right" t-if="record.if_zones.raw_value == false">
+                                        Open Area Parking
+                                    </div>
+                                    <div class="col-6 o_kanban_primary_right" t-if="record.if_zones.raw_value ==  true">
+                                        <div class="row">
+                                            <div class="col-9">
+                                                <a name="%(zone_action)d" type="action" context="{'search_default_floor_id': active_id}">
+                                                    Zones
+                                                </a>
+                                            </div>
+                                            <div class="col-3">
+                                                <t t-esc="record.floor_capacity.value"/>
+                                            </div>
+                                            <t t-if="record.booked.value > 0 or record.available.value > 0">
+                                            <div class="col-9">
+                                                <a name="%(slot_action)d" type="action" context="{'search_default_floor_id': active_id, 'search_default_not_available': '1'}">
+                                                    Booked
+                                                </a>
+                                            </div>
+                                            <div class="col-3">
+                                                <t t-esc="record.booked.value"/>
+                                            </div>
+                                            <div class="col-9">
+                                                <a name="%(slot_action)d" type="action" context="{'search_default_floor_id': active_id,'search_default_available': '1'}">
+                                                    Available
+                                                </a>
+                                            </div>
+                                            <div class="col-3">
+                                                <t t-esc="record.available.value"/>
+                                            </div></t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div><div class="container o_kanban_card_manage_pane dropdown-menu" role="menu">
+                                <div class="row">
+                                    <div class="col-6 o_kanban_card_manage_section o_kanban_manage_view">
+                                        <div role="menuitem" class="o_kanban_card_manage_title">
+                                            <span>View Bookings</span>
+                                        </div>
+                                        <div role="menuitem">
+                                            <a name="%(booking_action)d" type="action" context="{'search_default_floor_id': active_id}">
+                                                All
+                                            </a>
+                                        </div>
+                                        <div role="menuitem">
+                                            <a name="%(booking_action)d" type="action" context="{'search_default_floor_id': active_id,'search_default_state': 'allotted'}">
+                                                Allocated
+                                            </a>
+                                        </div>
+                                        <div role="menuitem">
+                                            <a name="%(booking_action)d" type="action" context="{'search_default_floor_id': active_id,'search_default_state': 'released'}">
+                                                Released
+                                            </a>
+                                        </div>
+                                        <div role="menuitem">
+                                            <a name="%(booking_action)d" type="action" context="{'search_default_floor_id': active_id,'search_default_state': 'invoiced'}">
+                                                Invoiced
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 o_kanban_card_manage_section o_kanban_manage_new">
+                                        <div role="menuitem" class="o_kanban_card_manage_title">
+                                            <span>Reporting</span>
+                                        </div>
+                                        <div role="menuitem">
+                                            <a name="%(report_action_floor)d" type="action" context="{'search_default_floor_id': active_id,'search_default_group_by_state':1}">
+                                            By floor
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div t-if="widget.editable" class="o_kanban_card_manage_settings row">
+                                    <div class="col-8" role="menuitem" aria-haspopup="true">
+                                        <ul role="menu" class="oe_kanban_colorpicker" data-field="color"/>
+                                    </div>
+                                    <div role="menuitem" class="col-4 text-right">
+                                        <a type="edit">Settings</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="booking_dashboard_action" model="ir.actions.act_window">
+        <field name="name">Dashboard</field>
+        <field name="res_model">parking.floor</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="view_id" ref="booking_dashboard_kanban"/>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Dashboard view
+          </p>
+        </field>
+    </record>
+
+    <menuitem  id="dashboard_menu" name="Dashboard" parent="parking_menu" action="booking_dashboard_action" sequence="1" />
+</odoo>
