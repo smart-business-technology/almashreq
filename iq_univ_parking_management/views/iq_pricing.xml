@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<odoo>
+
+
+				<record id="iq_pricing_card_form" model="ir.ui.view">
+					<field name="name">iq.park.pricing.form</field>
+					<field name="model">iq.park.pricing</field>
+					<field name="arch" type="xml">
+					
+						<form string="Parking Pricing" >
+							<field name="iq_pricing_name"/>
+							<field name="iq_pricing_amount"/>
+							
+							
+						</form>
+					</field>
+				</record>
+				
+				
+				
+				<record id="iq_pricing_card_tree" model="ir.ui.view">
+					<field name="name">iq.park.pricing.tree</field>
+					<field name="model">iq.park.pricing</field>
+					<field name="arch" type="xml">
+					
+						<tree string="Parking Pricing" >
+							<field name="iq_pricing_name"/>
+							<field name="iq_pricing_amount"/>
+							
+							
+						</tree>
+					</field>
+				</record>
+				
+				
+				
+				
+				
+				<record id="iq_pricing_card_wiazrd" model="ir.actions.act_window">
+					<field name="name">Parking Pricing</field>
+					<field name="type">ir.actions.act_window</field>
+					<field name="res_model">iq.park.pricing</field>
+					<field name="view_mode">tree</field>
+					<field name="target">current</field>
+				</record>
+				
+				
+				
+				<menuitem id="menu_iq_pricing_card_list" 
+				          name="Pricing" 
+				          action="iq_pricing_card_wiazrd" 
+				          parent="iq_univ_parking_management.iq_park_manage" sequence="2"/>
+				
+				
+
+</odoo>

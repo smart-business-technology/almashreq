@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+	<record id="iq_partner_cardkanban_view" model="ir.ui.view">
+		<field name="name">iq.partner.card.kanbanView</field>
+		<field name="model">iq.partner.card</field>
+		<field name="arch" type="xml">
+			<kanban>
+				<field name="iq_partner" />
+				<field name="iq_partner_barcode" />
+				<templates>
+					<t t-name="kanban-box">
+						<div class="oe_kanban_global_click">
+							<div class="oe_kanban_details">
+
+								<ul>
+								
+									<li>
+										Partner:
+										<span class="o_stat_value">
+											<b>
+												<field name="iq_partner" />
+											</b>
+										</span>
+									</li>
+									
+									<li>
+										Partner Barcode:
+										<span class="o_stat_value">
+											<b>
+												<field name="iq_partner_barcode" />
+											</b>
+										</span>
+									</li>
+									
+									
+									
+									<li>
+										Total Amount:
+										<span class="o_stat_value">
+											<b>
+												<field name="iq_partner_balance" />
+											</b>
+										</span>
+									</li>
+								</ul>
+
+
+							</div>
+						</div>
+					</t>
+
+				</templates>
+			</kanban>
+		</field>
+	</record>
+
+<!--   <record id="action_iq_park_payment_partner" model="ir.actions.act_window">
+            <field name="name">Payment</field>
+            <field name="res_model">account.payment</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account.view_account_payment_form"/>
+            <field name="context">{'search_default_iq_card_id': active_id}</field>
+             <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Record a new Statement
+              </p>
+            </field>
+        </record> -->
+
+
+
+	<record id="iq_partner_card_form" model="ir.ui.view">
+		<field name="name">iq.partner.card.form</field>
+		<field name="model">iq.partner.card</field>
+		<field name="arch" type="xml">
+
+			<form string="Parking Managment" duplicate="false">
+				<header>
+					<button name="iq_register_payment" string="Pay" 
+						type="object" class="oe_highlight" />
+
+				</header>
+
+				<sheet>
+					<div class="oe_button_box" name="button_box">
+						<button type="object" class="oe_stat_button" string="Partner Payments"
+							icon="fa-pencil-square-o" name="open_payment">
+
+						</button>
+					</div>
+
+
+				
+
+				<group string="Customer Info">
+					<group>
+
+						<field name="iq_partner" required = "1"/>
+						<field name="iq_partner_balance" />
+						<field name="iq_partner_barcode" required = "1"/>
+
+					</group>
+				</group>
+
+				<group string="Vehicle Info">
+					<group>
+						<field name="iq_vech_no" />
+
+						<field name="iq_vech_details" />
+					</group>
+				</group>
+
+				<group string="Pricing Info">
+					<group>
+						<field name="iq_pricing" />
+
+					</group>
+				</group>
+</sheet>
+			</form>
+		</field>
+	</record>
+
+
+
+	<record id="iq_partner_card_tree" model="ir.ui.view">
+		<field name="name">iq.partner.card.tree</field>
+		<field name="model">iq.partner.card</field>
+		<field name="arch" type="xml">
+
+			<tree string="Parking Managment">
+				<field name="iq_partner" />
+				<field name="iq_vech_no" />
+				<field name="iq_pricing" />
+				<field name="iq_partner_balance" />
+				<field name="iq_partner_barcode" />
+
+			</tree>
+		</field>
+	</record>
+
+
+	<record id="iq_partner_card_wiazrd"
+		model="ir.actions.act_window">
+		<field name="name">Parking Managment</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="res_model">iq.partner.card</field>
+		<field name="view_mode">kanban,tree,form</field>
+		<field name="target">current</field>
+	</record>
+
+
+	 <menuitem id="iq_park_manage" name="Parking Managment"
+		web_icon="iq_univ_parking_management,static/description/parking.png" />
+
+
+	<menuitem id="menu_iq_partner_card_list" name="Partners Cards"
+		action="iq_partner_card_wiazrd"
+		parent="iq_univ_parking_management.iq_park_manage" sequence="1" />
+
+</odoo>

@@ -1,0 +1,40 @@
+<odoo>
+	<!-- Add New  fields in contacts form -->
+	<record id="iq_inherit_contacts_form" model="ir.ui.view">
+		<field name="name">iq.inherit.contacts.form</field>
+		<field name="model">res.partner</field>
+		<field name="inherit_id" ref="base.view_partner_form" />
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='vat']" position="after">
+			<field name="iq_barcode" />
+				<field name="credit" />
+			</xpath>
+			
+		</field>
+	</record>
+	
+	
+	
+	
+	<record id="iq_inherit_payment_form" model="ir.ui.view">
+		<field name="name">iq.inherit.payment.form</field>
+		<field name="model">account.payment</field>
+		<field name="inherit_id" ref="account.view_account_payment_form" />
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='ref']" position="after">
+			<field name="iq_card_id"/>
+			<field name="iq_vech_no"/>
+			<field name="iq_vech_details"/>
+			<field name="iq_pricing"/>
+			<field name="iq_partner_balance"/>
+			<field name="iq_partner_barcode"/>
+			
+			
+			
+			</xpath>
+			
+		</field>
+	</record>
+	
+	
+</odoo>

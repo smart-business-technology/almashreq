@@ -1,0 +1,80 @@
+<odoo>
+    <data>
+    
+     <template id="parking_receipt_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="oe_structure" style="height:10px;"></div>
+                        <h2 align="center"> Parking Payment Receipt #<t t-esc="o.name"/></h2>
+                        <div>
+                            <h4><i>Vehicle Details</i></h4>
+                        </div>
+                        <table class="table table-condensed table-bordered">
+                            <tr>
+                                <td><strong>Customer Name:</strong></td>
+                                <td><t t-esc="o.partner_id.name"/></td>
+                                <td><strong>Customer Barcode:</strong></td>
+                                <td><t t-esc="o.iq_partner_barcode"/></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vehicle No:</strong></td>
+                                <td><t t-esc="o.iq_vech_no"/></td>
+                                <td><strong>Vehicle Details:</strong></td>
+                                <td><t t-esc="o.iq_vech_details"/></td>
+                            </tr>
+                        </table>
+                      
+                        <div>
+                            <h4><i>Pricing Details</i></h4>
+                        </div>
+                        <table class="table table-condensed table-bordered">
+                         <t t-if="o.iq_pricing.iq_pricing_name != '' ">
+                            <tr>
+                                <td><strong>Pricing Type</strong></td>
+                                <td><t t-esc="o.iq_pricing.iq_pricing_name"/></td>
+                                
+                                <td><strong>Pricing Amount</strong></td>
+                                <td><t t-esc="o.iq_pricing.iq_pricing_amount"/></td>
+                                
+                              
+                            </tr>
+                            </t>
+                            
+                            <tr>
+                                <td><strong>Amount Paid:</strong></td>
+                                <td>
+                                    <t t-if="o.currency_id">
+                                        <t t-esc="o.currency_id.symbol"/>
+                                    </t>
+                                    <t t-esc="o.amount"/>
+                                </td>
+                                <td><strong>Balance:</strong></td>
+                                <td>
+                                    <t t-if="o.currency_id">
+                                        <t t-esc="o.currency_id.symbol"/>
+                                    </t>
+                                    <t t-esc="o.iq_partner_balance"/>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    
+    
+    
+  <report
+            id="iq_parking_receipt"
+            model="account.payment"
+            string="Parking Receipt"
+            report_type="qweb-pdf"
+            name="iq_univ_parking_management.parking_receipt_template"
+            file="iq_univ_parking_management.parking_receipt_template"
+            menu ="True"
+        />
+    </data>
+</odoo>

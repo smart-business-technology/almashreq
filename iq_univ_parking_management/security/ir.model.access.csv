@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_iq_partner_card,iq.partner.card,iq_univ_parking_management.model_iq_partner_card,base.group_user,1,1,1,1
+access_iq_park_pricing,iq.park.pricing,iq_univ_parking_management.model_iq_park_pricing,base.group_user,1,1,1,1
+access_iq_pay_card,iq.pay.card,iq_univ_parking_management.model_iq_pay_card,base.group_user,1,1,1,1
