@@ -10,10 +10,13 @@
 					<field name="arch" type="xml">
 					
 						<form string="Parking Pricing" >
+						<sheet>
+						<group>
 							<field name="iq_pricing_name"/>
 							<field name="iq_pricing_amount"/>
+						</group>
 							
-							
+							</sheet>
 						</form>
 					</field>
 				</record>
