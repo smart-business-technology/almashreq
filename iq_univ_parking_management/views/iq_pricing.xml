@@ -42,7 +42,7 @@
 					<field name="name">Parking Pricing</field>
 					<field name="type">ir.actions.act_window</field>
 					<field name="res_model">iq.park.pricing</field>
-					<field name="view_mode">tree</field>
+					<field name="view_mode">tree,form</field>
 					<field name="target">current</field>
 				</record>
 				
