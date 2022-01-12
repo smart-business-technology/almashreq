@@ -100,7 +100,7 @@
 		
 		
 	
-		<menuitem id="zk_machine_menu" name="Zk machine" parent="hr.menu_hr_root" action="attendance_machine_action" sequence="20" />	
+		<menuitem id="zk_machine_menu" name="Zk machine" parent="iq_univ_parking_management.iq_park_manage" action="attendance_machine_action" sequence="20" />
 
     	
     	<record id="view_attendance_tree_inherit" model="ir.ui.view">
