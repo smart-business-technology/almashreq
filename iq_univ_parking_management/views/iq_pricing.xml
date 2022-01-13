@@ -11,12 +11,12 @@
 					
 						<form string="Parking Pricing" >
 						<sheet>
-						<group>
+					<group>
 							<field name="iq_pricing_name"/>
 							<field name="iq_pricing_amount"/>
-						</group>
+								</group>
+								</sheet>
 							
-							</sheet>
 						</form>
 					</field>
 				</record>

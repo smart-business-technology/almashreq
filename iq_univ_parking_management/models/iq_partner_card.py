@@ -15,7 +15,7 @@ class FPartnerCard(models.Model):
     iq_pricing= fields.Many2one('iq.park.pricing',string="Parking Pricing")
     iq_currency_id = fields.Many2one('res.currency', compute='_get_company_currency', readonly=True,
         string="Currency", help='Utility field to express amount currency')
-    iq_partner_balance = fields.Monetary(related='iq_partner.credit' , string='Total Balance',currency_field='iq_currency_id')
+    iq_partner_balance = fields.Monetary(related='iq_partner.credit' , string='Partner Balance',currency_field='iq_currency_id')
     iq_partner_barcode = fields.Char(related='iq_partner.iq_barcode' , string='Partner Barcode')
     
     

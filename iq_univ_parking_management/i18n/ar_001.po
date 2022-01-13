@@ -1,0 +1,333 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* iq_univ_parking_management
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-01-13 08:25+0000\n"
+"PO-Revision-Date: 2022-01-13 08:25+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.parking_receipt_template
+msgid "<i>Pricing Details</i>"
+msgstr "<i>تفاصيل التسعيير</i>"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.parking_receipt_template
+msgid "<i>Vehicle Details</i>"
+msgstr "<i>‫المركبة‬ ‫تفاصيل‬</i>"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.parking_receipt_template
+msgid "<strong>Amount Paid:</strong>"
+msgstr "<strong>المبلغ المدفوع:</strong>"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.parking_receipt_template
+msgid "<strong>Balance:</strong>"
+msgstr "<strong>الرصيد النهائي:</strong>"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.parking_receipt_template
+msgid "<strong>Customer Barcode:</strong>"
+msgstr "<strong>باركود العميل:</strong>"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.parking_receipt_template
+msgid "<strong>Customer Name:</strong>"
+msgstr "<strong>اسم العميل:</strong>"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.parking_receipt_template
+msgid "<strong>Pricing Amount</strong>"
+msgstr "<strong>مبلغ الاستقطاع</strong>"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.parking_receipt_template
+msgid "<strong>Pricing Type</strong>"
+msgstr "<strong>‫‬سياسة التسعير‬</strong>"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.parking_receipt_template
+msgid "<strong>Total Amount</strong>"
+msgstr "<strong>الرصيد المتوفر</strong>"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.parking_receipt_template
+msgid "<strong>Vehicle Details:</strong>"
+msgstr "<strong>تفاصيل المركبة:</strong>"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.parking_receipt_template
+msgid "<strong>Vehicle No:</strong>"
+msgstr "<strong>رقم المركبة:</strong>"
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_park_pricing__iq_pricing_amount
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_pay_card__iq_amount
+msgid "Amount"
+msgstr "الرصيد المضاف"
+
+#. module: iq_univ_parking_management
+#: model:ir.model.constraint,message:iq_univ_parking_management.constraint_res_partner_name_uniq
+msgid "Barcode already exists !"
+msgstr "معرف الباركود موجود على عميل آخر الرجاء استخدام معرف آخر !"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_pay_card_form
+msgid "Cancel"
+msgstr "الغاء"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_pay_card_form
+msgid "Confirm"
+msgstr "تأكيد"
+
+#. module: iq_univ_parking_management
+#: model:ir.model,name:iq_univ_parking_management.model_res_partner
+msgid "Contact"
+msgstr "جهة الاتصال"
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_park_pricing__create_uid
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_partner_card__create_uid
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_pay_card__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_park_pricing__create_date
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_partner_card__create_date
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_pay_card__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_partner_card__iq_currency_id
+msgid "Currency"
+msgstr "العملة"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_partner_card_form
+msgid "Customer Info"
+msgstr "معلومات العميل"
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_account_payment__display_name
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_park_pricing__display_name
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_partner_card__display_name
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_pay_card__display_name
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_res_partner__display_name
+msgid "Display Name"
+msgstr "الاسم المعروض"
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_account_payment__id
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_park_pricing__id
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_partner_card__id
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_pay_card__id
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_res_partner__id
+msgid "ID"
+msgstr "المُعرف"
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_pay_card__iq_journal
+msgid "Journal"
+msgstr "طريقة الدفع"
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_account_payment____last_update
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_park_pricing____last_update
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_partner_card____last_update
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_pay_card____last_update
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_res_partner____last_update
+msgid "Last Modified on"
+msgstr "آخر تعديل في"
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_park_pricing__write_uid
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_partner_card__write_uid
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_pay_card__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_park_pricing__write_date
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_partner_card__write_date
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_pay_card__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_park_pricing__iq_pricing_name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: iq_univ_parking_management
+#: model:ir.actions.act_window,name:iq_univ_parking_management.iq_partner_card_wiazrd
+#: model:ir.ui.menu,name:iq_univ_parking_management.iq_park_manage
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_partner_card_form
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_partner_card_search
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_partner_card_tree
+msgid "Parking Managment"
+msgstr "ادارة الاصطفاف"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_pay_card_form
+msgid "Parking Payment"
+msgstr "مدفوعات الاصطفاف"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.parking_receipt_template
+msgid "Parking Payment Receipt #"
+msgstr "وصل مدفوعات الاصطفاف"
+
+#. module: iq_univ_parking_management
+#: model:ir.actions.act_window,name:iq_univ_parking_management.iq_pricing_card_wiazrd
+#: model:ir.model,name:iq_univ_parking_management.model_iq_park_pricing
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_account_payment__iq_pricing
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_partner_card__iq_pricing
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_pricing_card_form
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_pricing_card_tree
+msgid "Parking Pricing"
+msgstr "تسعيرة الاصطفاف"
+
+#. module: iq_univ_parking_management
+#: model:ir.actions.report,name:iq_univ_parking_management.iq_parking_receipt
+msgid "Parking Receipt"
+msgstr "وصل الاصطفاف"
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_partner_card__iq_partner
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_pay_card__iq_partner
+msgid "Partner"
+msgstr "العميل"
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_account_payment__iq_partner_balance
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_partner_card__iq_partner_balance
+msgid "Partner Balance"
+msgstr "رصيد العميل"
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_account_payment__iq_partner_barcode
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_partner_card__iq_partner_barcode
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_res_partner__iq_barcode
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_res_users__iq_barcode
+msgid "Partner Barcode"
+msgstr "باركود العميل"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_partner_cardkanban_view
+msgid "Partner Barcode:"
+msgstr "باركود العميل"
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_account_payment__iq_card_id
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_pay_card__iq_card_id
+msgid "Partner Parking Card"
+msgstr "بطاقه اصطفاف العميل"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_partner_card_form
+msgid "Partner Payments"
+msgstr "مدفوعات العميل"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_partner_cardkanban_view
+msgid "Partner:"
+msgstr "العميل:"
+
+#. module: iq_univ_parking_management
+#: model:ir.model,name:iq_univ_parking_management.model_iq_partner_card
+msgid "Partners Card"
+msgstr "بطاقات العملاء"
+
+#. module: iq_univ_parking_management
+#: model:ir.ui.menu,name:iq_univ_parking_management.menu_iq_partner_card_list
+msgid "Partners Cards"
+msgstr "بطاقات العملاء"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_partner_card_form
+msgid "Pay"
+msgstr "ادفع"
+
+#. module: iq_univ_parking_management
+#: code:addons/iq_univ_parking_management/models/iq_park_payment.py:0
+#: code:addons/iq_univ_parking_management/models/iq_partner_card.py:0
+#: code:addons/iq_univ_parking_management/models/iq_partner_card.py:0
+#, python-format
+msgid "Payment"
+msgstr "دفعة"
+
+#. module: iq_univ_parking_management
+#: model:ir.model,name:iq_univ_parking_management.model_iq_pay_card
+msgid "Payment Card"
+msgstr "بطاقه الدفعة"
+
+#. module: iq_univ_parking_management
+#: model:ir.model,name:iq_univ_parking_management.model_account_payment
+msgid "Payments"
+msgstr "المدفوعات"
+
+#. module: iq_univ_parking_management
+#: model:ir.ui.menu,name:iq_univ_parking_management.menu_iq_pricing_card_list
+msgid "Pricing"
+msgstr "التسعيير"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_partner_card_form
+msgid "Pricing Info"
+msgstr "معلومات التسعيير"
+
+#. module: iq_univ_parking_management
+#: model:ir.actions.report,name:iq_univ_parking_management.iq_printpartnerparking_card
+msgid "Print Parking Card"
+msgstr "بطاقة الاصطفاف"
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_account_payment__iq_partner_balance_before
+msgid "Total Amount"
+msgstr "‫الرصيد المتوفر‬"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_partner_cardkanban_view
+msgid "Total Amount:"
+msgstr "الرصيد المتوفر"
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,help:iq_univ_parking_management.field_account_payment__iq_partner_balance
+#: model:ir.model.fields,help:iq_univ_parking_management.field_iq_partner_card__iq_partner_balance
+msgid "Total amount this customer owes you."
+msgstr ""
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,help:iq_univ_parking_management.field_iq_partner_card__iq_currency_id
+msgid "Utility field to express amount currency"
+msgstr ""
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_account_payment__iq_vech_details
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_partner_card__iq_vech_details
+msgid "Vehicle Details"
+msgstr "تفاصيل المركبة"
+
+#. module: iq_univ_parking_management
+#: model_terms:ir.ui.view,arch_db:iq_univ_parking_management.iq_partner_card_form
+msgid "Vehicle Info"
+msgstr "معلومات المركبة"
+
+#. module: iq_univ_parking_management
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_account_payment__iq_vech_no
+#: model:ir.model.fields,field_description:iq_univ_parking_management.field_iq_partner_card__iq_vech_no
+msgid "Vehicle Number"
+msgstr "رقم المركبة"

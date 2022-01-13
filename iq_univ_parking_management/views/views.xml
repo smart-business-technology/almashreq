@@ -21,11 +21,17 @@
 		<field name="model">account.payment</field>
 		<field name="inherit_id" ref="account.view_account_payment_form" />
 		<field name="arch" type="xml">
-			<xpath expr="//field[@name='ref']" position="after">
+			<xpath expr="//field[@name='partner_id']" position="before">
 			<field name="iq_card_id"/>
+			</xpath>
+			
+			<xpath expr="//field[@name='ref']" position="after">
+			
+			
 			<field name="iq_vech_no"/>
 			<field name="iq_vech_details"/>
 			<field name="iq_pricing"/>
+			<field name="iq_partner_balance_before"/>
 			<field name="iq_partner_balance"/>
 			<field name="iq_partner_barcode"/>
 			
@@ -35,6 +41,14 @@
 			
 		</field>
 	</record>
+	
+	
+	<!-- <menuitem id="menu_iq_partner_payment_cards_list" name="Payments"
+		action="account.action_account_payments"
+		parent="iq_univ_parking_management.iq_park_manage" sequence="5" />
+		
+		 -->
+		
 	
 	
 </odoo>

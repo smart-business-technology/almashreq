@@ -18,6 +18,7 @@ class FPartnerCardpaywizard(models.TransientModel):
             'payment_type': 'inbound',
             'partner_type': 'customer',
             'amount': self.iq_amount,
+            'iq_partner_balance_before':self.iq_card_id.iq_partner_balance ,
             'currency_id': self.env.company.currency_id.id,
             'journal_id': self.iq_journal.id,
             'company_id': self.env.company.id,
@@ -29,5 +30,34 @@ class FPartnerCardpaywizard(models.TransientModel):
         }
         payment = self.env['account.payment'].create(vals)
         payment.action_post()
+        print("payment",payment)
+        
+        pay = self.env['account.payment'].search([('id','=',payment.id)])
+        print("payyyy",pay.name)
+        
+        
+        
+        form_id = self.env.ref('account.view_account_payment_form').id
+        tree_id = self.env.ref('account.view_account_payment_tree').id
+        action = {
+             'name':_('Payment'),
+             'type': 'ir.actions.act_window',
+             'view_mode': 'tree,form',
+             'res_model': 'account.payment',
+             'domain':[('id', '=', pay.id)],
+            'target':'current'
+                
+             }
+        
+        print(action)
+             
+        return action
+    
+    
+    
+        
+        
+        
+        
     
     

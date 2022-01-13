@@ -113,7 +113,7 @@
 
 				<group string="Pricing Info">
 					<group>
-						<field name="iq_pricing" />
+						<field name="iq_pricing" options="{'no_create': True, 'no_quick_create': True, 'no_create_edit':True,'no_open': True}"/>
 
 					</group>
 				</group>
@@ -139,6 +139,26 @@
 			</tree>
 		</field>
 	</record>
+	
+	
+		<record id="iq_partner_card_search" model="ir.ui.view">
+		<field name="name">iq.partner.card.saerch</field>
+		<field name="model">iq.partner.card</field>
+		<field name="arch" type="xml">
+
+			<search string="Parking Managment">
+				<field name="iq_partner" />
+				<field name="iq_partner_barcode" />
+				<field name="iq_vech_no" />
+				<field name="iq_pricing" />
+			
+				
+
+			</search>
+		</field>
+	</record>
+	
+	
 
 
 	<record id="iq_partner_card_wiazrd"

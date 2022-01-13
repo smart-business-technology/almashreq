@@ -43,6 +43,17 @@
                             </t>
                             
                             <tr>
+                            
+                            <td><strong>Total Amount</strong></td>
+                                <td>
+                                    <t t-if="o.currency_id">
+                                        <t t-esc="o.currency_id.symbol"/>
+                                    </t>
+                                    <t t-esc="o.iq_partner_balance_before"/>
+                                </td>
+                                
+                                
+                                
                                 <td><strong>Amount Paid:</strong></td>
                                 <td>
                                     <t t-if="o.currency_id">
