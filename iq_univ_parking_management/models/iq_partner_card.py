@@ -8,7 +8,7 @@ class FPartnerCard(models.Model):
     def _get_company_currency(self):
         self.iq_currency_id = self.env.company.currency_id
     
-    
+
     iq_partner= fields.Many2one('res.partner',string="Partner")
     iq_vech_no= fields.Char(string="Vehicle Number")
     iq_vech_details= fields.Char(string="Vehicle Details")
@@ -17,8 +17,7 @@ class FPartnerCard(models.Model):
         string="Currency", help='Utility field to express amount currency')
     iq_partner_balance = fields.Monetary(related='iq_partner.credit' , string='Partner Balance',currency_field='iq_currency_id')
     iq_partner_barcode = fields.Char(related='iq_partner.iq_barcode' , string='Partner Barcode')
-    
-    
+
     
     
     
