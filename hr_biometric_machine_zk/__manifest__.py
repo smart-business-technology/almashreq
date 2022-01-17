@@ -6,7 +6,7 @@
     "website" : "",
     "description": "Module for the integration between ZK Biometric Machines and Odoo.",
     'license': 'AGPL-3',
-    "depends" : ["base","hr",'hr_attendance'],
+    "depends" : ["base","hr",'hr_attendance','iq_univ_parking_management'],
     "data" : [
 				"wizard/zk_create_users_wizard.xml",
 				"views/biometric_machine_view.xml",

@@ -28,7 +28,7 @@ class zkMachine(models.Model):
     state = fields.Selection([('draft', 'Draft'), ('done', 'Done')], 'State', default='draft')
     location_id = fields.Many2one('zk.machine.location', string="Location")
     port = fields.Integer("Port Number")
-    employee_ids = fields.Many2many("hr.employee", 'zk_machine_employee_rel', 'employee_id', 'machine_id',
+    employee_ids = fields.Many2many("iq.partner.card", 'zk_machine_employee_rel', 'employee_id', 'machine_id',
                                     string='Employees', readonly=True, copy=False, required=False)
 
     def try_connection(self):
@@ -64,41 +64,43 @@ class zkMachine(models.Model):
 
     def synchronize(self):
         for r in self:
-            employee = self.env['hr.employee']
+            employee = self.env['iq.partner.card']
             employee_location_line = self.env['zk.employee.location.line']
             employee_list = []
             machine_ip = r.name
             port = r.port
             zk = ZK(machine_ip, port=port, timeout=5, password=0, force_udp=False, ommit_ping=True)
             conn = ''
-            try:
-                conn = zk.connect()
-                conn.disable_device()
-                users = conn.get_users()
-                for user in users:
-                    employee_id = employee.search([('zknumber', '=', user.user_id)])
-                    if employee_id:
-                        employee_list.append(employee_id)
-                        if employee_id not in r.employee_ids:
-                            r.employee_ids += employee_id
-                            employee_location_line.create({'employee_id': employee_id.id,
-                                                           'zk_num': employee_id.zknumber,
-                                                           'machine_id': r.id,
-                                                           'uid': user.uid,
-                                                           'location_id': r.location_id.id})
-                for emp in employee_list:
-                    employee += emp
-                employees_unlink = r.employee_ids - employee
-                for emp1 in employees_unlink:
-                    employee_location_line_id = employee_location_line.search(
-                        [('employee_id', '=', emp1.id), ('machine_id', '=', r.id)])
-                    employee_location_line_id.unlink()
-                r.employee_ids = employee
-            except Exception as e:
-                raise UserError('The connection has not been achieved: %s' % (e))
-            finally:
-                if conn:
-                    conn.disconnect()
+
+            conn = zk.connect()
+            conn.disable_device()
+            users = conn.get_users()
+            for user in users:
+                employee_id = employee.search([('zknumber', '=', user.user_id)])
+                print(employee_id)
+                if employee_id:
+                    employee_list.append(employee_id)
+                    print(employee_list,user.user_id)
+                    if employee_id not in r.employee_ids:
+                        r.employee_ids += employee_id
+                        employee_location_line.create({'partner_card_id': employee_id.id,
+                                                       'zk_num': employee_id.zknumber,
+                                                       'machine_id': r.id,
+                                                       'uid': user.uid,
+                                                       'location_id': r.location_id.id})
+            for emp in employee_list:
+                employee += emp
+            employees_unlink = r.employee_ids - employee
+            for emp1 in employees_unlink:
+                employee_location_line_id = employee_location_line.search(
+                    [('partner_card_id', '=', emp1.id), ('machine_id', '=', r.id)])
+                employee_location_line_id.unlink()
+            r.employee_ids = employee
+            # except Exception as e:
+            #     raise UserError('The connection has not been achieved: %s' % (e))
+            # finally:
+            #     if conn:
+            conn.disconnect()
 
     def clear_attendance(self):
         for r in self:
@@ -158,7 +160,7 @@ class zkMachine(models.Model):
 
     def download_attendance(self):
         users = self.env['res.users']
-        attendance_obj = self.env["hr.attendance"]
+        attendance_obj = self.env["customer.attendance"]
         employee_location_line_obj = self.env["zk.employee.location.line"]
         user = self.env.user
         if not user.partner_id.tz:
@@ -179,7 +181,14 @@ class zkMachine(models.Model):
                         [("zk_num", "=", int(attendance.user_id)), ('location_id', '=', machine.location_id.id),
                          ('machine_id', '=', machine.id)])
                     if employee_location_line:
-                        employee_id = employee_location_line.employee_id
+                        employee_id = employee_location_line.partner_card_id.iq_partner
+                        balance = employee_location_line.partner_card_id
+
+
+
+                        amount = employee_location_line.partner_card_id.iq_pricing.iq_pricing_amount
+                        if not amount :
+                            amount = 0
                         date = attendance.timestamp
                         date1 = datetime.datetime.strptime(str(date), DEFAULT_SERVER_DATETIME_FORMAT)
                         date = tz.normalize(tz.localize(date1)).astimezone(pytz.utc).strftime("%Y-%m-%d %H:%M:%S")
@@ -196,76 +205,83 @@ class zkMachine(models.Model):
                         # print(db_import_time)
                         # print(date(2021,10,1))
 
-                        if not attendance.punch:
+                        # if not attendance.punch:
+                        print(datetime.datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S'))
+                        print(type(datetime.datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S')))
+                        d= datetime.datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S')
+                        attendance_id = attendance_obj.search(
+                            [('partner_id', '=', employee_id.id), ('check_in', '=', d)])
 
-                            attendance_id = attendance_obj.search(
-                                [('employee_id', '=', employee_id.id), ('check_in', '=', str(date))])
-                            checkout = attendance_obj.search(
-                                [('employee_id', '=', employee_id.id), ('check_out', '=', str(date))])
-                            only_checkin = attendance_obj.search(
-                                [('employee_id', '=', employee_id.id), ('check_in', '!=', None),
-                                 ('check_out', '=', None)])
-                            print(only_checkin)
+                        # checkout = attendance_obj.search(
+                        #     [('employee_id', '=', employee_id.id), ('check_out', '=', str(date))])
+                        # only_checkin = attendance_obj.search(
+                        #     [('employee_id', '=', employee_id.id), ('check_in', '!=', None),
+                        #      ('check_out', '=', None)])
+                        # print(only_checkin)
 
-                            employee_attendance = attendance_obj.search([('employee_id', '=', employee_id.id)])
-                            if attendance_id or checkout:
-                                print('continue')
-                                continue
-                            if not employee_attendance:
-                                print('not check')
-                                attend_id = attendance_obj.create({'check_in': date, 'employee_id': employee_id.id})
-                            elif not only_checkin and employee_attendance:
-                                attend_id = attendance_obj.create({'check_in': date, 'employee_id': employee_id.id})
-                            elif only_checkin:
-                                print('here')
-                                # if datetime.datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').date()
-                                if datetime.datetime.strptime(str(date),
-                                                              '%Y-%m-%d %H:%M:%S').date() == only_checkin.check_in.date():
-                                    # print("yes")
-                                    if not self.is_between(
-                                            datetime.datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').time(),
-                                            ("00:00:00", "03:00:00")) and not self.is_between(
-                                            only_checkin.check_in.time(), ("00:00:00", "03:00:00")):
-                                        # print(date)
-                                        # print(only_checkin.check_in)
-                                        # print("cheout")
-                                        only_checkin.write({'check_out': date})
-
-                                    if self.is_between(only_checkin.check_in.time(),
-                                                       ("00:00:00", "03:00:00")) and self.is_between(
-                                            datetime.datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').time(),
-                                            ("00:00:00", "03:00:00")):
-                                        print("between 1:3")
-                                        only_checkin.write({'check_out': date})
-                                    if self.is_between(only_checkin.check_in.time(),
-                                                       ("00:00:00", "03:00:00")) and not self.is_between(
-                                            datetime.datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').time(),
-                                            ("00:00:00", "03:00:00")):
-                                        only_checkin.write({'check_out': only_checkin.check_in})
-                                        attend_id = attendance_obj.create(
-                                            {'check_in': date, 'employee_id': employee_id.id})
-                                    if not self.is_between(only_checkin.check_in.time(),("00:00:00", "03:00:00")):
-                                        only_checkin.write({'check_out': date})
-                                elif (datetime.datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').date() - only_checkin.check_in.date()).days == 1:
-                                    if self.is_between(
-                                            datetime.datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').time(),
-                                            ("00:00:00", "03:00:00")):
-                                        only_checkin.write({'check_out': date})
-                                    else:
-                                        only_checkin.write({'check_out': only_checkin.check_in})
-                                        attend_id = attendance_obj.create(
-                                            {'check_in': date, 'employee_id': employee_id.id})
-                                else:
-                                    # print("--------------")
-                                    # print((datetime.datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').date() - only_checkin.check_in.date()).days)
-                                    # # print(dayss)
-                                    # print(datetime.datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').date() - only_checkin.check_in.date())
-                                    # print(date)
-                                    # print(only_checkin.check_in)
-                                    # print('final')
-                                    only_checkin.write({'check_out': only_checkin.check_in})
-                                    attend_id = attendance_obj.create(
-                                        {'check_in': date, 'employee_id': employee_id.id})
+                        employee_attendance = attendance_obj.search([('partner_id', '=', employee_id.id)])
+                        if attendance_id :
+                            print('continue')
+                            continue
+                        if not attendance_id:
+                            print('not check')
+                            print(employee_id.name)
+                            print(employee_id)
+                            if employee_id:
+                                balance.iq_partner_balance = balance.iq_partner_balance - amount
+                                attend_id = attendance_obj.create({'check_in': date, 'partner_id': employee_id.id, 'balance': balance.iq_partner_balance,'discount':amount})
+                            # elif not only_checkin and employee_attendance:
+                            #     attend_id = attendance_obj.create({'check_in': date, 'employee_id': employee_id.id})
+                            # elif only_checkin:
+                            #     print('here')
+                            #     # if datetime.datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').date()
+                            #     if datetime.datetime.strptime(str(date),
+                            #                                   '%Y-%m-%d %H:%M:%S').date() == only_checkin.check_in.date():
+                            #         # print("yes")
+                            #         if not self.is_between(
+                            #                 datetime.datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').time(),
+                            #                 ("00:00:00", "03:00:00")) and not self.is_between(
+                            #                 only_checkin.check_in.time(), ("00:00:00", "03:00:00")):
+                            #             # print(date)
+                            #             # print(only_checkin.check_in)
+                            #             # print("cheout")
+                            #             only_checkin.write({'check_out': date})
+                            #
+                            #         if self.is_between(only_checkin.check_in.time(),
+                            #                            ("00:00:00", "03:00:00")) and self.is_between(
+                            #                 datetime.datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').time(),
+                            #                 ("00:00:00", "03:00:00")):
+                            #             print("between 1:3")
+                            #             only_checkin.write({'check_out': date})
+                            #         if self.is_between(only_checkin.check_in.time(),
+                            #                            ("00:00:00", "03:00:00")) and not self.is_between(
+                            #                 datetime.datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').time(),
+                            #                 ("00:00:00", "03:00:00")):
+                            #             only_checkin.write({'check_out': only_checkin.check_in})
+                            #             attend_id = attendance_obj.create(
+                            #                 {'check_in': date, 'employee_id': employee_id.id})
+                            #         if not self.is_between(only_checkin.check_in.time(),("00:00:00", "03:00:00")):
+                            #             only_checkin.write({'check_out': date})
+                            #     elif (datetime.datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').date() - only_checkin.check_in.date()).days == 1:
+                            #         if self.is_between(
+                            #                 datetime.datetime.strptime(str(date), '%Y-%m-%d %H:%M:%S').time(),
+                            #                 ("00:00:00", "03:00:00")):
+                            #             only_checkin.write({'check_out': date})
+                            #         else:
+                            #             only_checkin.write({'check_out': only_checkin.check_in})
+                            #             attend_id = attendance_obj.create(
+                            #                 {'check_in': date, 'employee_id': employee_id.id})
+                            #     else:
+                            #         # print("--------------")
+                            #         # print((datetime.datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').date() - only_checkin.check_in.date()).days)
+                            #         # # print(dayss)
+                            #         # print(datetime.datetime.strptime(str(date),'%Y-%m-%d %H:%M:%S').date() - only_checkin.check_in.date())
+                            #         # print(date)
+                            #         # print(only_checkin.check_in)
+                            #         # print('final')
+                            #         only_checkin.write({'check_out': only_checkin.check_in})
+                            #         attend_id = attendance_obj.create(
+                            #             {'check_in': date, 'employee_id': employee_id.id})
 
                             #
                             #     attend_id = attendance_obj.create({'check_in': date, 'employee_id': employee_id.id})
@@ -460,11 +476,52 @@ class hrEmployee(models.Model):
         employee_location_line.unlink()
         return True
 
+class FPartnerCard(models.Model):
+    _inherit = 'iq.partner.card'
+    zk_location_line_ids = fields.One2many('zk.employee.location.line', 'partner_card_id', string='Locations')
+    zknumber = fields.Char("Number zk")
+    name = fields.Char(string="", required=False, )
+    identification_id = fields.Char(
+        string='Identification No',
+        copy=False
+    )
+    def delete_employee_zk(self):
+        machine_id = self.env['zk.machine'].search([('id', '=', int(self.env.context.get('machine_id')))])
+        machine_ip = machine_id.name
+        port = machine_id.port
+        zk = ZK(machine_ip, port=port, timeout=10, password=0, force_udp=False, ommit_ping=True)
+        conn = ''
+        try:
+            conn = zk.connect()
+            conn.disable_device()
+            employee_location_line = self.env['zk.employee.location.line'].search(
+                [('employee_id', '=', self.id), ('machine_id', '=', machine_id.id)])
+            conn.delete_user(uid=employee_location_line.uid)
+            machine_id.employee_ids = machine_id.employee_ids - self
+            employee_location_line.unlink()
+        except Exception as e:
+            raise UserError('Unable to complete user registration')
+        finally:
+            if conn != '':
+                conn.enable_device()
+                conn.disconnect()
+        return True
+
+    def disassociate_employee_zk(self):
+        machine_id = self.env['zk.machine'].search([('id', '=', int(self.env.context.get('machine_id')))])
+        employee_location_line = self.env['zk.employee.location.line'].search(
+            [('employee_id', '=', self.id), ('machine_id', '=', machine_id.id)])
+        machine_id.employee_ids = machine_id.employee_ids - self
+        employee_location_line.unlink()
+        return True
+
+
 
 class hrZkEmployeeLocationLine(models.Model):
     _name = 'zk.employee.location.line'
 
     employee_id = fields.Many2one('hr.employee', string="Employee")
+    partner_card_id = fields.Many2one('iq.partner.card', string="Customer Card")
     zk_num = fields.Integer(string="ZKSoftware Number", help="ZK Attendance User Code", required=True)
     machine_id = fields.Many2one('zk.machine', string="Machine", required=True)
     location_id = fields.Many2one('zk.machine.location', related='machine_id.location_id', string="Location")
@@ -472,3 +529,15 @@ class hrZkEmployeeLocationLine(models.Model):
 
     _sql_constraints = [('unique_location_emp', 'unique(employee_id,location_id)',
                          'There is a record of this employee for this location.')]
+
+
+
+class CustomerAttendance(models.Model):
+    _name = 'customer.attendance'
+
+
+    partner_id = fields.Many2one('res.partner', 'Partner', )
+    check_in = fields.Datetime(string="", required=False, )
+    check_out = fields.Datetime(string="", required=False, )
+    discount = fields.Float(string="Discount",  required=False, )
+    balance = fields.Float("Balance")
